@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+   
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: studentdb
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+   
+
+  springboot-app:
+    build: .
+    container_name: student-app
+    depends_on:
+      - mysql
+    ports:
+      - "8099:8099"  # WAR runs on 8080, mapped to 8099
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/studentdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ""
+    restart: always
+volumes:
+  mysql-data:
+
+
