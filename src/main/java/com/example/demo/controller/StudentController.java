@@ -22,16 +22,16 @@ public class StudentController {
 
     @GetMapping("/")
 public String homeRedirect() {
-    return "redirect:/students/form";
+    return "redirect:pages/students/form";
 }
     @GetMapping("/form")
     public String showForm() {
-        return "Signup";
+        return "pages/Signup";
     }
 
     @GetMapping("/loginform")
     public String showLoginForm() {
-        return "Login";
+        return "pages/Login";
     }
 
     @PostMapping("/login")
@@ -44,27 +44,27 @@ public String homeRedirect() {
 
         if (user == null) {
             model.addAttribute("error", "Username does not exist");
-            return "Login";
+            return "pages/Login";
         }
 
         if (!user.getPwd().equals(pwd)) {
             model.addAttribute("error", "Invalid password");
-            return "Login";
+            return "pages/Login";
         }
 
         session.setAttribute("loggedInUser", user);
-        return "redirect:/students/dashboard";
+        return "redirect:pages/students/dashboard";
     }
 
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
         Student loggedInUser = (Student) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/students/loginform";
+            return "redirect:pages/students/loginform";
         }
 
         model.addAttribute("username", loggedInUser.getUsername());
-        return "dashboard";
+        return "pages/dashboard";
     }
 
     @PostMapping("/Signup")
@@ -73,25 +73,25 @@ public String homeRedirect() {
 
         if (existingUser != null) {
             model.addAttribute("error", "Username already exists!");
-            return "Signup";
+            return "pages/Signup";
         }
 
         repo.save(stud);
-        return "Login";
+        return "pages/Login";
     }
 
     @GetMapping("/app")
     public String showStudentForm(HttpSession session, Model model) {
         Student loggedInUser = (Student) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return "redirect:/students/loginform";
+            return "redirect:pages/students/loginform";
         }
 
         StudentDetail detail = repo1.findByStudent(loggedInUser);
         if (detail == null) detail = new StudentDetail();
 
         model.addAttribute("studentDetail", detail);
-        return "App";
+        return "pages/App";
     }
 
     @PostMapping("/App")
@@ -107,13 +107,13 @@ public String homeRedirect() {
         studetail.setStudent(student);
         repo1.save(studetail);
 
-        return "redirect:/students/dashboard";
+        return "redirect:pages/students/dashboard";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/students/loginform";
+        return "redirect:pages/students/loginform";
     }
 
     @PostMapping("/delete")
@@ -127,6 +127,6 @@ public String homeRedirect() {
             session.invalidate();
         }
 
-        return "redirect:/students/form";
+        return "redirect:pages/students/form";
     }
 }
